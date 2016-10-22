@@ -72,12 +72,14 @@ class Board() {
   /* 石を打つ処理 */
   /* 打てない位置だったらfalseを返す */
   def move(point: Point): Boolean = {
-    if(point.x < 0 || point.x >= BOARD_SIZE)
+    if(point.x <= 0 || point.x > BOARD_SIZE)
       false
-    else if(point.y < 0 || point.y >= BOARD_SIZE)
+    else if(point.y <= 0 || point.y > BOARD_SIZE)
       false
-    else if(MovableDir(Turns)(point.x)(point.y) == NONE)
+    else if(MovableDir(Turns)(point.x)(point.y) == NONE){
+      println("hoge")
       false
+    }
     else{
       flipDiscs(point)
 
@@ -141,6 +143,7 @@ class Board() {
       true
     }
   }
+  /* 座標 p の色を返す */
   def getColor(p: Point): Disc.Color = RawBoard(p.x)(p.y)
   /* 現在の手番を返す */
   def getCurrentColor(): Disc.Color = CurrentColor
@@ -218,14 +221,15 @@ class Board() {
   private def initMovable(): Unit = {
     MovablePos(Turns) = Vector.empty
 
-    for(y <- 0 until BOARD_SIZE){
-      for(x <- 0 until BOARD_SIZE){
+    for(y <- 1 to BOARD_SIZE){
+      for(x <- 1 to BOARD_SIZE){
         val disc = new Disc(x, y, CurrentColor)
         val dir = checkMobility(disc)
         if(dir != NONE){
           // 置ける場所
           MovablePos(Turns) = MovablePos(Turns) :+ disc
         }
+        MovableDir(Turns)(x)(y) = dir
       }
     }
   }

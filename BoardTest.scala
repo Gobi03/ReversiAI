@@ -1,46 +1,64 @@
 import java.util.Scanner
 
-class ConsoleBoard extends Board {
-  def prinring() {
-    println("　a b c d e f g h ")
-    for(i <- 1 to 8){
-      print(" " + y)
-      for(x <- 1 to 8){
-        getColor(new Point(x, y)) match {
-          case Disc.BLACK => print("●")
-          case Disc.WHITE => print("◯")
-          case _          => print("　")
-        }
-      }
-      println()
-    }
-  }
-}
-
-
-class BoardTest {
+object BoardTest {
   def main(args: Array[String]){
-
-    // input system
+    val sc = new Scanner(System.in)
 
     val board = new ConsoleBoard
+    board.init()
 
     while(true) {
+      /* print the board */
       board.printing()
-      print("黒石"   + board.countDisc(Disc.BLACK) + "　")
-      print("白石"   + board.countDisc(Disc.WHITE) + "　")
-      print("空マス" + board.countDisc(Disc.EMPTY) + "　")
+      /* numbers of stones */
+      print("黒石:"   + board.countDisc(Disc.BLACK) + "　")
+      print("白石:"   + board.countDisc(Disc.WHITE) + "　")
+      print("空マス:" + board.countDisc(Disc.EMPTY) + "　")
       println()
 
-      print("手を入力して下さい。")
+      board.getCurrentColor() match{
+        case Disc.BLACK => println("黒番")
+        case Disc.WHITE => println("白番")
+        case _ =>
+            throw new Exception("WALL or EMPTY is here")
+      }
+      print("手を入力して下さい:")
 
-      try {
-        val in = sc.nextInt()
-      } catch {
-        case 変数:例外クラス => 式1
-          …
-      } finally {
-        式
+      val in = sc.nextLine()
+
+      var flag = true
+
+      if(in == "p"){
+        if(!board.pass){
+          println("パスできません！")
+        }
+        flag = false
+      }
+      else if(in == "u"){
+        board.undo()
+        flag = false
+      }
+
+      var p = new Point()
+      if(flag){
+        try{
+          p = new Point(in)
+        }
+        catch{
+          case _: java.lang.IllegalArgumentException =>
+            println("リバーシ形式の手を入力して下さい！")
+            flag = false
+        }
+      }
+
+      if(!board.move(p) && flag){
+        println("そこには置けません！")
+        flag = false
+      }
+
+      if(board.isGameOver() && flag){
+        println("----------------ゲーム終了----------------")
+        return ()
       }
     }
   }

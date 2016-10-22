@@ -4,6 +4,10 @@ FSC = $(FSCBIN)/fsc
 .PHONY: clean
 
 
+BoardTest.class: ConsoleBoard.class
+	$(FSC) BoardTest.scala
+ConsoleBoard.class: Board.class
+	$(FSC) ConsoleBoard.scala
 Board.class: ColorStorage.class
 	$(FSC) Board.scala
 ColorStorage.class: Disc.class
