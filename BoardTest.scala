@@ -16,6 +16,8 @@ object BoardTest {
       print("空マス:" + board.countDisc(Disc.EMPTY) + "　")
       println()
 
+      println("p: pass, u: undo")
+      
       board.getCurrentColor() match{
         case Disc.BLACK => println("黒番")
         case Disc.WHITE => println("白番")

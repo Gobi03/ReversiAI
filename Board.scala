@@ -25,10 +25,12 @@ class Board() {
   private var UpdateLog =
     Vector.empty[scala.collection.immutable.Vector[Disc]]
 
-  private val MovablePos =
-    Array.fill(MAX_TURNS+1)(Vector.empty[Disc])
+  /* ターン、座標ごとのビットマスクが入る */
   private var MovableDir =
     Array.ofDim[Int](MAX_TURNS+1, BOARD_SIZE+2, BOARD_SIZE+2)
+  /* 打てる位置の座標の Vector */
+  private val MovablePos =
+    Array.fill(MAX_TURNS+1)(Vector.empty[Disc])
 
   // stone num of each colors
   private val Discs = new ColorStorage()
@@ -88,7 +90,7 @@ class Board() {
 
       initMovable()
 
-      true
+      return true
     }
   }
   /* 直前の一手を元に戻す。 */
@@ -97,7 +99,8 @@ class Board() {
       false
     else{
       CurrentColor = Disc.revColor(CurrentColor)
-      val update = UpdateLog(UpdateLog.length)
+      // 最新のターンの盤面変化の情報
+      val update = UpdateLog(UpdateLog.length - 1)
       UpdateLog = UpdateLog.dropRight(1)
 
       if(update.isEmpty){  // 前回がパス
@@ -115,6 +118,7 @@ class Board() {
         RawBoard(tmpP.x)(tmpP.y) = Disc.EMPTY
         val revColor = Disc.revColor(CurrentColor)
         for(i <- 1 until update.length){
+          println(i)
           val p = update(i)
           RawBoard(p.x)(p.y) = revColor
         }
@@ -253,7 +257,7 @@ class Board() {
 
         while(RawBoard(x)(y) != CurrentColor){
           RawBoard(x)(y) = CurrentColor
-          update :+ (new Disc(x, y, CurrentColor))
+          update = update :+ (new Disc(x, y, CurrentColor))
           x += vx; y += vy
         }
       }
