@@ -59,6 +59,14 @@ object BoardTest {
       }
 
       if(board.isGameOver() && flag){
+        /* print the board */
+        board.printing()
+        /* numbers of stones */
+        print("黒石:"   + board.countDisc(Disc.BLACK) + "　")
+        print("白石:"   + board.countDisc(Disc.WHITE) + "　")
+        print("空マス:" + board.countDisc(Disc.EMPTY) + "　")
+        println()
+        println()
         println("----------------ゲーム終了----------------")
         return ()
       }
