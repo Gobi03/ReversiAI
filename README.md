@@ -1,7 +1,7 @@
 『リバーシのアルゴリズム』[1] の内容を、型制約強めたりしつつ Scala で実装したものです。
 
-``$ make
-$ scala BoardTest``
+    $ make
+    $ scala BoardTest
 
 で実行できます。
 
