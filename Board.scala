@@ -29,6 +29,7 @@ class Board() {
   private var MovableDir =
     Array.ofDim[Int](MAX_TURNS+1, BOARD_SIZE+2, BOARD_SIZE+2)
   /* 打てる位置の座標の Vector */
+  // Array[Vector[Disc]]
   private val MovablePos =
     Array.fill(MAX_TURNS+1)(Vector.empty[Disc])
 
