@@ -8,7 +8,8 @@ class AlphaBetaAI extends AI {
 
   def move(board: Board): Unit = {
     // Vector[Disc]
-    val movables = board.getMovablePos()
+    var movables: scala.collection.immutable.Vector[Point]
+                           = board.getMovablePos()
 
     if(movables.isEmpty) {
       // 打てる箇所がなければパスする
@@ -22,11 +23,22 @@ class AlphaBetaAI extends AI {
     }
     else {
       var limit = 0
+      var Eval = new MidEvaluator()
+      // 事前に手を良さそうな順にソート
+      movables = sort(board, movables, presearch_depth)
+
+      
       // 終盤読み
-      if(Board.MAX_TURNS - board.getTurns() <= wld_depth)
+      if(Board.MAX_TURNS - board.getTurns() <= wld_depth) {
         limit = Int.MaxValue
-      else  // 序盤・中盤
+        if(Board.MAX_TURNS - board.getTurns() <= perfect_depth)
+          Eval = new PerfectEvaluator()
+        else
+          Eval = new WLDEvaluator()
+      }
+      else { // 序盤・中盤
         limit = normal_depth
+      }
 
       var eval_max = -Int.MaxValue
       var p = new Point()
@@ -84,8 +96,7 @@ class AlphaBetaAI extends AI {
     }
   }
 
-  // どこで使うのか分からんけど、実装の都合でUnit でなくソートされたVector返すようにした
-  private def sort(board: Board, movables: scala.collection.immutable.Vector[Disc], limit: Int): scala.collection.immutable.Vector[Move] = {
+  private def sort(board: Board, movables: scala.collection.immutable.Vector[Point], limit: Int): scala.collection.immutable.Vector[Point] = {
     var moves = Vector.empty[Move]
 
     for(i <- 0 until movables.length){
@@ -113,7 +124,6 @@ class AlphaBetaAI extends AI {
         }
       }
     }
-
 
     return moves
   }
