@@ -139,6 +139,149 @@ class MidEvaluator extends Evaluator {
     }
     else{
       // 再帰的にすべてのパターンを網羅
+      edge(count) = Disc.EMPTY.num
+      generateEdge(edge, count + 1)
+
+      edge(count) = Disc.BLACK.num
+      generateEdge(edge, count + 1)
+
+      edge(count) = Disc.WHITE.num
+      generateEdge(edge, count + 1)
+
+      return ()
+    }
+  }
+
+  def evalEdge(line: Array[Int], color: Color): EdgeParam = {
+    val edgeparam = new EdgeParam()
+
+    // ウィング等のカウント
+    if(line(0) == Disc.EMPTY && line(7) == Disc.EMPTY){
+      var x = 2
+      var flag = true
+      while(x <= 5 && flag){
+        if(line(x) != color)
+          flag = false  // 終了
+        else
+          x += 1
+      }
+      if(x == 6){
+        if(line(1) == color && line(6) == Disc.EMPTY)
+          edgeparam.wing = 1
+        else if(line(1) == color && line(6) == color)
+          edgeparam.wing = 1
+        else
+          edgeparam.mountain = 1
+      }
+      else{
+        if(line(1) == color)
+          edgeparam.Cmove += 1
+        else
+          edgeparam.Cmove += 1
+      }
+    }
+
+    // 確定石のカウント
+    val break = new scala.util.control.Breaks
+    // 左から右方向に走査
+    b.breakable {
+      for(x <- 0 until 8){
+        if(line(x) != color)
+          edgeparam.stable += 1
+      }
+    }
+
+    b.breakable {
+      // 右側からの走査も必要
+      for(x <- (1 to 7).reversed){
+        if(line(x) != color)
+          edgeparam.stable += 1
+      }
+    }
+    return edgeparam
+  }
+
+  def evalCorner(board: Board): CornerStat = {
+    val conerstat = new CornerStat()
+
+    cornerstat.get(Disc.BLACK).corner = 0
+    cornerstat.get(Disc.BLACK).Xmove = 0
+    cornerstat.get(Disc.WHITE).corner = 0
+    cornerstat.get(Disc.WHITE).Xmove = 0
+
+    val p = new Point()
+
+    def func(coord: (Int, Int)): Unit = {
+      cornerstat.get(board.getColor(p)).corner += 1
+      if(board.getColor(p) == Disc.EMPTY){
+        p.x = coord._1; p.y = coord._2
+          cornerstat.get(board.getColor(p)).Xmove += 1
+      }
+    }
+
+    p.x = 1; p.y = 1
+    func((2, 2))
+    p.x = 1; p.y = 8
+      func((2, 7))
+    p.x = 8; p.y = 8
+      func((7, 7))
+    p.x = 8; p.y = 1
+    func((7, 2))
+
+    return cornerstat
+  }
+
+  private def idxUpDown(board: Board, coord: (Int, Int)): Int = {
+    var index = 0
+
+    var m = 1
+    val p = new Point(coord._1, coord._2)
+    for(i <- (1 to board.BOARD_SIZE).reversed){
+      p.x = i
+      index += m * (board.getColor(p).num + 1)
+      m *= 3
+    }
+
+    return index
+  }
+  private def idxLeftRight(board: Board, coord: (Int, Int)): Int = {
+    var index = 0
+
+    var m = 1
+    val p = new Point(coord._1, coord._2)
+    for(i <- (1 to board.BOARD_SIZE).reversed){
+      p.y = i
+      index += m * (board.getColor(p).num + 1)
+      m *= 3
+    }
+
+    return index
+  }
+
+  def idxTop(board: Board): Int = {
+    return idxUpDown(board, (0, 1))
+  }
+  def idxBottom(board: Board): Int = {
+    return idxUpDown(board, (0, 8))
+  }
+  def idxRight(board: Board): Int = {
+    return idxLeftRight(board, (8, 0))
+  }
+  def idxLeft(board: Board): Int = {
+    return idxLeftRight(board, (1, 0))
+  }
+
+  private def countLiberty(board: Board): ColorStorage = {
+    val liberty = new ColorStorage()
+
+    liberty.set(Disc.BLACK, 0)
+    liberty.set(Disc.WHITE, 0)
+    liberty.set(Disc.EMPTY, 0)
+
+    val p = new Point()
+
+    for(x <- 1 to board.BOARD_SIZE){
+      p.x = x
       
     }
   }
