@@ -282,7 +282,20 @@ class MidEvaluator extends Evaluator {
 
     for(x <- 1 to board.BOARD_SIZE){
       p.x = x
-      
+      for(y <- 1 to board.BOARD_SIZE){
+        p.y = y
+        val l = liberty.get(board.getColor(p)) + board.getLiberty(p)
+        liberty.set(board.getColor(p), l)
+      }
     }
+
+    return liberty
+  }
+
+  private def idxLine(l: Array[Int]) = {
+    var res = l(0) + 1
+    for(i <- 1 to 7)
+      res = 3 * res + l(i) + 1
+    return res
   }
 }
