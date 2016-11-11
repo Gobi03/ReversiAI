@@ -5,6 +5,8 @@ class Point(coord: String) {
 
   require(x >= 0 && x <= 9 && y >= 0 && y <= 9)
   override def toString = coord
+  // def ==(that: Point): Boolean =
+  //   this.x != that.x && this.y != that.y
 
   def this() = this("`0")
   def this(a: Int, b: Int) =
