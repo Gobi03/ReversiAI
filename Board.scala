@@ -282,4 +282,15 @@ class Board() {
 
     UpdateLog = UpdateLog :+ update
   }
+
+  // /// Section 5
+  // // Vector の型とか調整
+  // def getHistory(): Vector = {
+  //   var history = Vector.empty
+  //   for(i <- 0 until UpdateLog.size()){
+  //     val update = UpdateLog(i)
+  //     if(!update.isEmpty)
+  //       history = history :+ add(update(0))
+  //   }
+  // }
 }
